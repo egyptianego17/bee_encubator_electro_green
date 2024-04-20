@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build",
+  "command": "/usr/bin/gcc  -I/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/.pio/libdeps/esp-wrover-kit/Unity/src -I.  -g   -Waddress -Waggregate-return -Wformat-nonliteral -Wformat-security -Wformat -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wno-multichar -Wno-parentheses -Wno-type-limits -Wno-unused-parameter -Wunreachable-code -Wwrite-strings -Wpointer-arith -Werror -Wall -std=c11 -o CMakeFiles/unity.dir/src/unity.c.o   -c /home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/.pio/libdeps/esp-wrover-kit/Unity/src/unity.c",
+  "file": "/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/.pio/libdeps/esp-wrover-kit/Unity/src/unity.c"
+}
+]

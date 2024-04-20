@@ -1,0 +1,7 @@
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/install/strip.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/install.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/list_install_components.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/rebuild_cache.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/edit_cache.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/install/local.dir
+/home/egyptianego17/Documents/PlatformIO/Projects/bee_encubator/build/CMakeFiles/unity.dir
