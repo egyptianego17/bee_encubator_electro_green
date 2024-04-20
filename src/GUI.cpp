@@ -32,7 +32,7 @@ void LCDInit()
 
 uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t size, uint8_t y)
 {
-  if ((size > MAX_TEXT_SIZE) || (y > LCD_MAX_X) || (strlen(text) > (LCD_MAX_X/FONT_DEFAULT_SIZE)))
+  if ((size > MAX_TEXT_SIZE) || (y > LCD_MAX_Y) || (strlen(text) > (LCD_MAX_X/FONT_DEFAULT_SIZE)))
   {
     return STD_TYPES_NOK;
   }
@@ -102,4 +102,24 @@ void warningScreen(const char warning[])
   drawText("System", MIDDLE_ALLIGNMENT, ST77XX_RED, 1, 60);
   drawText("Fail", MIDDLE_ALLIGNMENT, ST77XX_RED, 1, 80);
   drawText(warning, MIDDLE_ALLIGNMENT, ST77XX_RED, 1, 100);
+}
+
+void updateWIFIStatus(uint8_t status)
+{
+  Serial.println("Updating WIFI status");
+  Serial.println(status);
+  drawText("                     ", MIDDLE_ALLIGNMENT, ST77XX_GREEN, 1, 130);
+
+  if (status == WIFI_CONNECTED)
+  {
+    drawText("Client Connected", MIDDLE_ALLIGNMENT, ST77XX_GREEN, 1, 130);
+  }
+  else if (status == WIFI_CONNECTING)
+  {
+    drawText("Client Connecting", MIDDLE_ALLIGNMENT, ST77XX_ORANGE, 1, 130);
+  }
+  else
+  {
+    drawText("Client Disconnected", MIDDLE_ALLIGNMENT, ST77XX_RED, 1, 130);
+  }
 }

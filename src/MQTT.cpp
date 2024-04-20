@@ -3,10 +3,13 @@
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 #include "../lib/MQTT.h"
+#include "../lib/GUI.h"
 #include "../lib/STD_TYPES.h"
 
 WiFiClientSecure espClient;  
 PubSubClient client(espClient);
+
+void callback(char* topic, byte* payload, unsigned int length);
 
 static const char *root_ca PROGMEM = R"EOF(
 -----BEGIN CERTIFICATE-----
@@ -43,23 +46,76 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 )EOF";
 
 
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+void MQTTConnect() {
+  espClient.setCACert(root_ca);
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+  
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+ 
+  Serial.println("Connecting to MQTT...");
+  while (!client.connected()) {
+    reconnectClient();
+  }
+  client.loop();
+}
+
+void reconnectClient() {
+  // Loop until we’re reconnected or timeout occurs
+  unsigned long startTime = millis();
+  while (!client.connected() && millis() - startTime < 10000) {
+    Serial.print("Attempting MQTT connection… ");
+    String clientId = "ESP32Client";
+    // Attempt to connect
+    if (client.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
+      Serial.println("connected!");
+      // Once connected, publish an announcement…
+      client.publish("testTopic", "Hello World!");
+      // … and resubscribe
+      client.subscribe("testTopic");
+    } else {
+      Serial.print("failed, rc = ");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      updateWIFIStatus(WIFI_DISCONNECTED);
+      // Wait 5 seconds before retrying
+      delay(2000);
+    }
+  }
+}
+
+bool getClientStatus()
+{
+  return client.connected();
+}
+
 void createAndUploadJson(float temperature, float humidity) 
 {
-  StaticJsonBuffer<300> JSONbuffer;
-  JsonObject& JSONencoder = JSONbuffer.createObject();
- 
-  JSONencoder["deviceID"] = "ESP32_7KAX";
-  JSONencoder["tempreature"] = temperature;
-  JSONencoder["humidity"] = humidity;
- 
-  char JSONmessageBuffer[100];
-  JSONencoder.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-  Serial.println("Sending message to MQTT topic..");
-  Serial.println(JSONmessageBuffer);
- 
-  if (client.publish("esp/test", JSONmessageBuffer) == true) {
+  JsonDocument doc;
+
+  // Add values in the document
+  doc["deviceID"] = "ESP32_7KAX";
+  doc["tempreature"] = temperature;
+  doc["humidity"] = humidity;
+
+  String jsonString;
+  serializeJson(doc, jsonString);
+
+  if (client.publish("esp/test", jsonString.c_str())) {
     Serial.println("Success sending message");
   } else {
     Serial.println("Error sending message");
   }
+  
 }

@@ -2,6 +2,8 @@
 #include <esp_task_wdt.h>
 #include "../lib/GUI.h"
 #include "../lib/TempHumidityControl.h"
+#include "../lib/WIFI.h"
+#include "../lib/MQTT.h"
 #include "../lib/STD_TYPES.h"
 
 const uint8_t targetTempreature = 25;
@@ -24,6 +26,8 @@ void setup(void) {
     }
     esp_task_wdt_reset();
   }
+  WIFIInit();
+  MQTTConnect();
   delay(5000);
 }
 
@@ -56,8 +60,22 @@ void loop() {
     heaterRelayState = false;
     fanRelayState = false;
   }
-          
   updateGUI(operatingSensor->temperature, operatingSensor->humidity, heaterRelayState, fanRelayState);
+  bool clientStatus = getClientStatus();
+  Serial.println("Server status : ");
+  Serial.println(clientStatus);
+  if(clientStatus == false)
+  {
+    updateWIFIStatus(WIFI_CONNECTING);
+    Serial.println("Reconnecting to MQTT...");
+    reconnectWiFi();
+    reconnectClient();
+  }
+  else
+  {
+    createAndUploadJson(operatingSensor->temperature, operatingSensor->humidity);
+    updateWIFIStatus(WIFI_CONNECTED);
+  }
   delay(2000);
 }
 

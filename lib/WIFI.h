@@ -2,8 +2,10 @@
 #define _WIFI_H
 
 /* WiFi settings */
-const char* ssid = "zucse2022";
-const char* password = "zucse2022";
+#define ssid "zucse2022"
+#define password "zucse2022"
 
 void WIFIInit();
+void reconnectWiFi();
+
 #endif
