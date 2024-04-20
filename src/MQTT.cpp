@@ -2,8 +2,8 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
-#include "MQTT.h"
-#include "STD_TYPES.h"
+#include "../lib/MQTT.h"
+#include "../lib/STD_TYPES.h"
 
 WiFiClientSecure espClient;  
 PubSubClient client(espClient);
