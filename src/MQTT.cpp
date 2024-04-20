@@ -46,6 +46,13 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 )EOF";
 
 
+/* 
+@param: char* topic  - topic to which the message is published
+@param: byte* payload - message to be published
+@param: unsigned int length - length of the message
+@return: void
+@description: This function is called when a message is received from the MQTT server
+*/
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -71,6 +78,11 @@ void MQTTConnect() {
   client.loop();
 }
 
+/*
+@param: void
+@return: void
+@description: This function is called when the client is disconnected from the MQTT server to reconnect again
+*/
 void reconnectClient() {
   // Loop until we’re reconnected or timeout occurs
   unsigned long startTime = millis();
@@ -95,6 +107,11 @@ void reconnectClient() {
   }
 }
 
+/*
+@param: void
+@return: bool - returns the status of the client
+@description: This function returns the status of the client
+*/
 bool getClientStatus()
 {
   return client.connected();
@@ -117,5 +134,4 @@ void createAndUploadJson(float temperature, float humidity)
   } else {
     Serial.println("Error sending message");
   }
-  
 }

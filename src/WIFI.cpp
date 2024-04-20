@@ -5,10 +5,15 @@
 #include "../lib/WIFI.h"
 #include "../lib/STD_TYPES.h"
 
+/*
+@params: void
+@return: void
+@description: This function initializes the WiFi module
+*/
 void WIFIInit()
 {
   delay(10);
-  // We start by connecting to a WiFi network
+  /* We start by connecting to a WiFi network */
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -27,15 +32,20 @@ void WIFIInit()
 
 }
 
+/*
+@params: void
+@return: void
+@description: This function is called when the client is disconnected from the MQTT server to reconnect again
+*/
 void reconnectWiFi() {
-    // Attempt to reconnect to WiFi
+    /* Attempt to reconnect to WiFi */
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi not connected, trying to reconnect...");
 
-        // Begin connection attempt
+        /* Begin connection attempt */
         WiFi.begin(ssid, password);
 
-        // Wait for the connection to be established
+        /* Wait for the connection to be established */
         int attempt = 0;
         while (WiFi.status() != WL_CONNECTED && attempt < 10) {
             delay(500);
@@ -44,10 +54,10 @@ void reconnectWiFi() {
         }
 
         if (WiFi.status() == WL_CONNECTED) {
-            // WiFi is successfully connected
+            /* WiFi is successfully connected */
             Serial.println("\nConnected to WiFi");
         } else {
-            // Failed to connect to WiFi
+            /* Failed to connect to WiFi */
             Serial.println("\nFailed to connect to WiFi");
         }
     }

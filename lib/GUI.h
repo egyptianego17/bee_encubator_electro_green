@@ -1,9 +1,9 @@
 #ifndef _GUI_H
 #define _GUI_H
 
-#define TFT_CS        32 // Hallowing display control pins: chip select
-#define TFT_RST       33 // Display reset
-#define TFT_DC        25 // Display data/command select
+#define TFT_CS        32 /* Hallowing display control pins: chip select */
+#define TFT_RST       33 /* Display reset */
+#define TFT_DC        25 /* Display data/command select */
 
 #define WIFI_DISCONNECTED 0
 #define WIFI_CONNECTED 1
