@@ -34,7 +34,7 @@ void setup(void) {
     while(sensorsActuatorsInit() != STD_TYPES_OK)
     {
       Serial.println("ERROR");
-      warningScreen("Temp Sensors Error");
+      warningScreen("Sensors Error");
       delay(500);
     }
     esp_task_wdt_reset();
@@ -92,10 +92,11 @@ void loop() {
   Serial.println(clientStatus);
   if(clientStatus != MQTT_CLIENT_CONNECTED)
   {
-    updateWIFIStatus(WIFI_CONNECTING);
+    updateWIFIStatus(WIFI_DISCONNECTED);
     Serial.println("Reconnecting to MQTT...");
     if (reconnectWiFi() == WIFI_STATUS_CONNECTED)
     {
+        updateWIFIStatus(WIFI_CONNECTING);
       if (reconnectClient() == MQTT_CLIENT_CONNECTED)
       {
         updateWIFIStatus(WIFI_CONNECTED);

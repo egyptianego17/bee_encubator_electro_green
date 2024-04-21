@@ -19,9 +19,14 @@ typedef enum
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
+/*
+@param: void
+@return: void
+@desc: This function init the LCD and Load screen
+*/
 void LCDInit()
 {
-  tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
+  tft.initR(INITR_BLACKTAB);      /* Init ST7735S chip, black tab */
   tft.invertDisplay(true);
   tft.fillScreen(ST77XX_WHITE);
   drawText("Queen Bee", MIDDLE_ALLIGNMENT, ST77XX_RED, 2, 50);
@@ -63,6 +68,14 @@ uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t s
   return STD_TYPES_OK;
 }
 
+/*
+@param: float temprature - currrent temprature of the system
+@param: float humidity - curent humidity of the system
+@param: bool heaterStatus - status of the heater
+@param: bool fanSatuts - status of the fan
+@return: void
+@desc: This function updates the GUI with the current system status
+*/
 void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatuts)
 {
   tft.fillScreen(ST77XX_WHITE);
@@ -96,6 +109,11 @@ void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatu
   }
 }
 
+/*
+@param: const char warning[] - warning string to be shown on the LCD
+@return: void
+@desc: This function shows a warning screen on the LCD
+*/
 void warningScreen(const char warning[])
 {
   tft.fillScreen(ST77XX_WHITE);
@@ -108,8 +126,7 @@ void updateWIFIStatus(uint8_t status)
 {
   Serial.println("Updating WIFI status");
   Serial.println(status);
-  drawText("                     ", MIDDLE_ALLIGNMENT, ST77XX_GREEN, 1, 130);
-
+  tft.fillRoundRect(1, 125, 128, 20, 1, ST7735_WHITE);
   if (status == WIFI_CONNECTED)
   {
     drawText("Client Connected", MIDDLE_ALLIGNMENT, ST77XX_GREEN, 1, 130);

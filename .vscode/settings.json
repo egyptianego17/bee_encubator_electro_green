@@ -3,7 +3,8 @@
         "cmath": "cpp",
         "*.tpp": "cpp",
         "istream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "random": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

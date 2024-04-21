@@ -3,7 +3,7 @@
 
 /* WiFi settings */
 #define ssid "zucse2022"
-#define password "zucse2022"
+#define password "zucse2024"
 
 #define WIFI_STATUS_CONNECTED 3
 #define WIFI_STATUS_DISCONNECTED 6
