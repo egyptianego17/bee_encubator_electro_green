@@ -51,7 +51,7 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 @param: byte* payload - message to be published
 @param: unsigned int length - length of the message
 @return: void
-@description: This function is called when a message is received from the MQTT server
+@desc: This function is called when a message is received from the MQTT server
 */
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -63,7 +63,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 }
 
-void MQTTConnect() {
+/*
+@param: void
+@return: uint8_t - returns the status of the client
+@desc: This function initializes the MQTT client
+*/
+uint8_t MQTTInit() {
   espClient.setCACert(root_ca);
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
@@ -72,45 +77,46 @@ void MQTTConnect() {
   client.setCallback(callback);
  
   Serial.println("Connecting to MQTT...");
-  while (!client.connected()) {
+  unsigned long startTime = millis();
+  while (!client.connected() && millis() - startTime < 10000) {
     reconnectClient();
   }
-  client.loop();
+  return client.connected();
 }
 
 /*
 @param: void
-@return: void
-@description: This function is called when the client is disconnected from the MQTT server to reconnect again
+@return: uint8_t - returns the status of the client
+@desc: This function is called when the client is disconnected from the MQTT server to reconnect again
 */
-void reconnectClient() {
-  // Loop until we’re reconnected or timeout occurs
+uint8_t reconnectClient() {
+  /* Loop until we’re reconnected or timeout occurs */
   unsigned long startTime = millis();
   while (!client.connected() && millis() - startTime < 10000) {
     Serial.print("Attempting MQTT connection… ");
     String clientId = "ESP32Client";
-    // Attempt to connect
+    /* Attempt to connect */
     if (client.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
       Serial.println("connected!");
-      // Once connected, publish an announcement…
+      /* Once connected, publish an announcement… */
       client.publish("testTopic", "Hello World!");
-      // … and resubscribe
+      /* … and resubscribe */
       client.subscribe("testTopic");
     } else {
       Serial.print("failed, rc = ");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
-      updateWIFIStatus(WIFI_DISCONNECTED);
-      // Wait 5 seconds before retrying
+      /* Wait 5 seconds before retrying */
       delay(2000);
     }
   }
+  return client.connected();
 }
 
 /*
 @param: void
 @return: bool - returns the status of the client
-@description: This function returns the status of the client
+@desc: This function returns the status of the client
 */
 bool getClientStatus()
 {
@@ -121,7 +127,7 @@ void createAndUploadJson(float temperature, float humidity)
 {
   JsonDocument doc;
 
-  // Add values in the document
+  /* Add values in the document */
   doc["deviceID"] = "ESP32_7KAX";
   doc["tempreature"] = temperature;
   doc["humidity"] = humidity;

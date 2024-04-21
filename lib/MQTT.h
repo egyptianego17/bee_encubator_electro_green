@@ -6,10 +6,11 @@
 #define mqtt_username "xaviA"
 #define mqtt_password "xavi1234A"
 #define mqtt_port 8883
-
+#define MQTT_CLIENT_CONNECTED 1
+#define MQTT_CLIENT_DISCONNECTED 0
 void createAndUploadJson(float temperature, float humidity);
-void MQTTConnect();
-void reconnectClient();
+uint8_t MQTTInit();
+uint8_t reconnectClient();
 bool getClientStatus();
 
 #endif

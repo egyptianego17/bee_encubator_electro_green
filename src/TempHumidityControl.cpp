@@ -75,9 +75,12 @@ uint8_t sensorsUpdateCheck()
 @return uint8_t
 @desc: This function initializes the DHT22 sensors and checks for any malfunctions.
 */
-
-uint8_t DHT22Init()
+uint8_t sensorsActuatorsInit()
 {
+    
+  // pinMode(HEATER_PIN_IN1, OUTPUT);
+  // pinMode(FAN_PIN_IN2, OUTPUT);
+
   primaryDHT22.begin();
   backupDHT22.begin();
 
@@ -114,3 +117,8 @@ uint8_t DHT22Init()
   return STD_TYPES_OK;
 }
 
+void actuateOnRelays(bool heaterRelayState, bool fanRelayState)
+{
+  // digitalWrite(HEATER_PIN_IN1, !heaterRelayState);
+  // digitalWrite(FAN_PIN_IN2, !fanRelayState);
+}

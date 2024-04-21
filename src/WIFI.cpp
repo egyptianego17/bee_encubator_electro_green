@@ -7,10 +7,10 @@
 
 /*
 @params: void
-@return: void
+@return: uint8_t - returns the status of the WiFi connection
 @description: This function initializes the WiFi module
 */
-void WIFIInit()
+uint8_t WIFIInit()
 {
   delay(10);
   /* We start by connecting to a WiFi network */
@@ -18,9 +18,10 @@ void WIFIInit()
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  unsigned long startTime = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) {
+      delay(500);
+      Serial.print(".");
   }
 
   randomSeed(micros());
@@ -29,16 +30,17 @@ void WIFIInit()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-
+  return WiFi.status();
 }
 
 /*
 @params: void
-@return: void
+@return: uint8_t - returns the status of the WiFi connection
 @description: This function is called when the client is disconnected from the MQTT server to reconnect again
 */
-void reconnectWiFi() {
+uint8_t reconnectWiFi() {
     /* Attempt to reconnect to WiFi */
+    Serial.println("Reconnecting to WiFi...");
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi not connected, trying to reconnect...");
 
@@ -61,4 +63,5 @@ void reconnectWiFi() {
             Serial.println("\nFailed to connect to WiFi");
         }
     }
+  return WiFi.status();
 }
