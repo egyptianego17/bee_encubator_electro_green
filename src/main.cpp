@@ -4,19 +4,13 @@
 #include "../lib/TempHumidityControl.h"
 #include "../lib/WIFI.h"
 #include "../lib/MQTT.h"
+#include "../lib/OTA.h"
 #include "../lib/STD_TYPES.h"
 
 const uint8_t targetTempreature = 25;
 const uint8_t tempPrecision = 0.5;
 bool heaterRelayState = false;
 bool fanRelayState = false;
-
-// hw_timer_t *Timer3_Cfg = NULL;
-
-// void IRAM_ATTR Timer3_ISR()
-// {
-//   Serial.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii shiiiiiiiiiiiiiiiiiit");
-// }
 
 void setup(void) {
   Serial.begin(115200);
@@ -41,6 +35,7 @@ void setup(void) {
   }
   WIFIInit();
   MQTTInit();
+  OTAUpdate();
   delay(5000);
 }
 

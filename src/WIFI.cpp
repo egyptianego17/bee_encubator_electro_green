@@ -5,11 +5,20 @@
 #include "../lib/WIFI.h"
 #include "../lib/STD_TYPES.h"
 
-/*
-@params: void
-@return: uint8_t - returns the status of the WiFi connection
-@description: This function initializes the WiFi module
-*/
+/**
+ * @brief Initializes the WiFi connection.
+ * 
+ * This function connects to a WiFi network using the provided SSID and password.
+ * It waits for a maximum of 10 seconds for the connection to be established.
+ * 
+ * @return The status of the WiFi connection.
+ *         Possible return values:
+ *         - WL_CONNECTED: WiFi connection successful
+ *         - WL_NO_SSID_AVAIL: WiFi network not found
+ *         - WL_CONNECT_FAILED: WiFi connection failed
+ *         - WL_IDLE_STATUS: WiFi module is not configured in station mode
+ *         - WL_DISCONNECTED: WiFi module is not connected to any network
+ */
 uint8_t WIFIInit()
 {
   delay(10);
@@ -33,11 +42,14 @@ uint8_t WIFIInit()
   return WiFi.status();
 }
 
-/*
-@params: void
-@return: uint8_t - returns the status of the WiFi connection
-@description: This function is called when the client is disconnected from the MQTT server to reconnect again
-*/
+/**
+ * @brief Attempts to reconnect to WiFi.
+ * 
+ * This function attempts to reconnect to WiFi by calling WiFi.begin() with the provided SSID and password.
+ * It waits for the connection to be established and returns the status of the WiFi connection.
+ * 
+ * @return The status of the WiFi connection (WL_CONNECTED if successfully connected, otherwise not connected).
+ */
 uint8_t reconnectWiFi() {
     /* Attempt to reconnect to WiFi */
     Serial.println("Reconnecting to WiFi...");

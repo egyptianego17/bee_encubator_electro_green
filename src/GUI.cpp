@@ -19,11 +19,14 @@ typedef enum
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
-/*
-@param: void
-@return: void
-@desc: This function init the LCD and Load screen
-*/
+
+/**
+ * @brief Initializes the LCD display.
+ * 
+ * This function initializes the LCD display by configuring the ST7735S chip,
+ * setting the display inversion, filling the screen with white color, and
+ * drawing some text on the screen.
+ */
 void LCDInit()
 {
   tft.initR(INITR_BLACKTAB);      /* Init ST7735S chip, black tab */
@@ -35,6 +38,16 @@ void LCDInit()
   drawText("Electro Green", MIDDLE_ALLIGNMENT, ST77XX_GREEN, 1, 125);
 }
 
+/**
+ * @brief Draws text on the screen with the specified alignment, color, size, and y-coordinate.
+ * 
+ * @param text The text to be drawn.
+ * @param allignment The alignment of the text (MIDDLE_ALLIGNMENT, RIGHT_ALLIGNMENT, or LEFT_ALLIGNMENT).
+ * @param color The color of the text.
+ * @param size The size of the text.
+ * @param y The y-coordinate of the text.
+ * @return uint8_t Returns STD_TYPES_OK if the text is drawn successfully, otherwise returns STD_TYPES_NOK.
+ */
 uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t size, uint8_t y)
 {
   if ((size > MAX_TEXT_SIZE) || (y > LCD_MAX_Y) || (strlen(text) > (LCD_MAX_X/FONT_DEFAULT_SIZE)))
@@ -68,14 +81,17 @@ uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t s
   return STD_TYPES_OK;
 }
 
-/*
-@param: float temprature - currrent temprature of the system
-@param: float humidity - curent humidity of the system
-@param: bool heaterStatus - status of the heater
-@param: bool fanSatuts - status of the fan
-@return: void
-@desc: This function updates the GUI with the current system status
-*/
+
+/**
+ * @brief Updates the GUI with the given temperature, humidity, heater status, and fan status.
+ * 
+ * This function clears the screen and displays the system status, temperature, humidity, heater status, and fan status on the screen.
+ * 
+ * @param temperature The temperature value to be displayed.
+ * @param humidity The humidity value to be displayed.
+ * @param heaterStatus The status of the heater (true for on, false for off).
+ * @param fanStatus The status of the fan (true for on, false for off).
+ */
 void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatuts)
 {
   tft.fillScreen(ST77XX_WHITE);
@@ -109,11 +125,12 @@ void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatu
   }
 }
 
-/*
-@param: const char warning[] - warning string to be shown on the LCD
-@return: void
-@desc: This function shows a warning screen on the LCD
-*/
+
+/**
+ * Displays a warning screen on the TFT display.
+ * 
+ * @param warning The warning message to be displayed.
+ */
 void warningScreen(const char warning[])
 {
   tft.fillScreen(ST77XX_WHITE);
@@ -122,6 +139,17 @@ void warningScreen(const char warning[])
   drawText(warning, MIDDLE_ALLIGNMENT, ST77XX_RED, 1, 100);
 }
 
+/**
+ * @brief Updates the WIFI status on the GUI.
+ * 
+ * This function updates the WIFI status on the graphical user interface (GUI) based on the provided status value.
+ * It prints the WIFI status to the serial monitor and displays the corresponding message on the TFT display.
+ * 
+ * @param status The WIFI status to be updated. It can be one of the following values:
+ *               - WIFI_CONNECTED: Indicates that the client is connected to the WIFI network.
+ *               - WIFI_CONNECTING: Indicates that the client is currently connecting to the WIFI network.
+ *               - Any other value: Indicates that the client is disconnected from the WIFI network.
+ */
 void updateWIFIStatus(uint8_t status)
 {
   Serial.println("Updating WIFI status");

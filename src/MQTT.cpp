@@ -45,14 +45,16 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 -----END CERTIFICATE-----
 )EOF";
 
-
-/* 
-@param: char* topic  - topic to which the message is published
-@param: byte* payload - message to be published
-@param: unsigned int length - length of the message
-@return: void
-@desc: This function is called when a message is received from the MQTT server
-*/
+/**
+ * @brief Callback function for MQTT message reception.
+ * 
+ * This function is called when a new MQTT message is received.
+ * It prints the received message to the Serial monitor.
+ * 
+ * @param topic The topic of the received message.
+ * @param payload The payload (message content) of the received message.
+ * @param length The length of the payload.
+ */
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -63,11 +65,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 }
 
-/*
-@param: void
-@return: uint8_t - returns the status of the client
-@desc: This function initializes the MQTT client
-*/
+/**
+ * @brief Initializes the MQTT client and establishes a connection to the MQTT server.
+ * 
+ * This function sets the CA certificate, server address, server port, and callback function for the MQTT client.
+ * It then attempts to connect to the MQTT server and waits for a maximum of 10 seconds for the connection to be established.
+ * 
+ * @return true if the MQTT client is successfully connected to the server, false otherwise.
+ */
 uint8_t MQTTInit() {
   espClient.setCACert(root_ca);
   client.setServer(mqtt_server, mqtt_port);
@@ -84,11 +89,11 @@ uint8_t MQTTInit() {
   return client.connected();
 }
 
-/*
-@param: void
-@return: uint8_t - returns the status of the client
-@desc: This function is called when the client is disconnected from the MQTT server to reconnect again
-*/
+/**
+ * Attempts to reconnect the MQTT client to the broker.
+ * 
+ * @return true if the client is successfully reconnected, false otherwise.
+ */
 uint8_t reconnectClient() {
   /* Loop until we’re reconnected or timeout occurs */
   unsigned long startTime = millis();
@@ -113,16 +118,24 @@ uint8_t reconnectClient() {
   return client.connected();
 }
 
-/*
-@param: void
-@return: bool - returns the status of the client
-@desc: This function returns the status of the client
-*/
+/**
+ * @brief Check the status of the MQTT client.
+ * 
+ * This function returns the status of the MQTT client, indicating whether it is currently connected or not.
+ * 
+ * @return true if the client is connected, false otherwise.
+ */
 bool getClientStatus()
 {
   return client.connected();
 }
 
+/**
+ * @brief Creates a JSON document with temperature and humidity values and publishes it to an MQTT topic.
+ * 
+ * @param temperature The temperature value to be included in the JSON document.
+ * @param humidity The humidity value to be included in the JSON document.
+ */
 void createAndUploadJson(float temperature, float humidity) 
 {
   JsonDocument doc;
