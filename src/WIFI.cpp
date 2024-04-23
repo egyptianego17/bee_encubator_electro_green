@@ -1,7 +1,4 @@
 #include <WiFi.h>
-#include <PubSubClient.h>
-#include <ArduinoJson.h>
-#include <WiFiClientSecure.h>
 #include "../lib/WIFI.h"
 #include "../lib/STD_TYPES.h"
 
