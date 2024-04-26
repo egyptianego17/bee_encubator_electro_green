@@ -4,7 +4,6 @@
 #include "../lib/TempHumidityControl.h"
 #include "../lib/WIFI.h"
 #include "../lib/MQTT.h"
-#include "../lib/OTA.h"
 #include "../lib/STD_TYPES.h"
 
 const uint8_t targetTempreature = 25;
@@ -14,11 +13,6 @@ bool fanRelayState = false;
 
 void setup(void) {
   Serial.begin(115200);
-
-  // Timer3_Cfg = timerBegin(3, 80, true);
-  // timerAttachInterrupt(Timer3_Cfg, &Timer3_ISR, true);
-  // timerAlarmWrite(Timer3_Cfg, 1000, true);
-  // timerAlarmEnable(Timer3_Cfg);
 
   LCDInit();
   if (sensorsActuatorsInit() == STD_TYPES_NOK)
@@ -35,7 +29,6 @@ void setup(void) {
   }
   WIFIInit();
   MQTTInit();
-  OTAUpdate();
   delay(5000);
 }
 
