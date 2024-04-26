@@ -2,10 +2,14 @@
 #define _MQTT_H
 
 /* HiveMQ Cloud Broker settings */
-#define mqtt_server "98f5567ae14b46818d9c1f8eba4135a3.s1.eu.hivemq.cloud"
-#define mqtt_username "xaviA"
-#define mqtt_password "xavi1234A"
+#define mqtt_server "ag4n5fourdi53-ats.iot.eu-north-1.amazonaws.com"
+#define mqtt_username ""
+#define mqtt_password ""
 #define mqtt_port 8883
+// const char* OUTTOPIC = "device1/sub";
+// const char* INTOPIC = "device1/pub";
+// const char* THINGNAME = "Device1";
+// const char* awsEndpoint = "ag4n5fourdi53-ats.iot.eu-north-1.amazonaws.com";
 #define MQTT_CLIENT_CONNECTED 1
 #define MQTT_CLIENT_DISCONNECTED 0
 

@@ -104,5 +104,5 @@ void loop() {
     createAndUploadJson(operatingSensor->temperature, operatingSensor->humidity);
     updateWIFIStatus(WIFI_CONNECTED);
   }
-  delay(3000);
+  delay(10000);
 }
