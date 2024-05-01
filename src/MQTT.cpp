@@ -13,8 +13,6 @@ const char* INTOPIC = "device1/sub";
 const char* THINGNAME = "device1";
 const char* awsEndpoint = "ag4n5fourdi53-ats.iot.eu-north-1.amazonaws.com";
 
-WiFiClientSecure espClient;  
-PubSubClient client(awsEndpoint, 8883, callback, espClient);
 static const char *root_ca PROGMEM = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIDQTCCAimgAwIBAgITBmyfz5m/jAo54vB4ikPmljZbyjANBgkqhkiG9w0BAQsF
@@ -91,6 +89,9 @@ MmYFVyQsEOSE5zTyJPkCFhY2RNn+0zRGJ/jImAr4LwVC/dG1rG96JJEFIoPkpA==
 -----END CERTIFICATE-----
 )EOF";
 
+WiFiClientSecure espClient;  
+PubSubClient client(awsEndpoint, 8883, callback, espClient);
+
 /**
  * @brief Callback function for MQTT message reception.
  * 
@@ -111,6 +112,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 }
 
+
 /**
  * @brief Initializes the MQTT client and establishes a connection to the MQTT server.
  * 
@@ -123,11 +125,6 @@ uint8_t MQTTInit() {
   espClient.setCACert(root_ca);
   espClient.setCertificate(certificate_pem_crt);
   espClient.setPrivateKey(private_pem_key);
-  // client.setServer(mqtt_server, mqtt_port);
-  // client.setCallback(callback);
-  
-  // client.setServer(mqtt_server, mqtt_port);
-  // client.setCallback(callback);
  
   Serial.println("Connecting to MQTT...");
   unsigned long startTime = millis();

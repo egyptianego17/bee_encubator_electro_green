@@ -4,6 +4,7 @@
 #include "../lib/TempHumidityControl.h"
 #include "../lib/WIFI.h"
 #include "../lib/MQTT.h"
+#include "../lib/Debugging_MQTT.h"
 #include "../lib/STD_TYPES.h"
 
 const uint8_t targetTempreature = 25;
@@ -28,7 +29,7 @@ void setup(void) {
     esp_task_wdt_reset();
   }
   WIFIInit();
-  MQTTInit();
+  debuggingMQTTInit();
   delay(5000);
 }
 
@@ -75,17 +76,17 @@ void loop() {
   updateGUI(operatingSensor->temperature, operatingSensor->humidity, heaterRelayState, fanRelayState);
 
   /* Check the MQTT Client */
-  bool clientStatus = getClientStatus();
+  bool clientStatus = debuggingGetClientStatus();
   Serial.println("Server status: ");
   Serial.println(clientStatus);
   if(clientStatus != MQTT_CLIENT_CONNECTED)
   {
     updateWIFIStatus(WIFI_DISCONNECTED);
     Serial.println("Reconnecting to MQTT...");
-    if (reconnectWiFi() == WIFI_STATUS_CONNECTED)
+    if (debuggingReconnectClient() == WIFI_STATUS_CONNECTED)
     {
         updateWIFIStatus(WIFI_CONNECTING);
-      if (reconnectClient() == MQTT_CLIENT_CONNECTED)
+      if (debuggingReconnectClient() == MQTT_CLIENT_CONNECTED)
       {
         updateWIFIStatus(WIFI_CONNECTED);
       }
@@ -101,7 +102,7 @@ void loop() {
   }
   else
   {
-    createAndUploadJson(operatingSensor->temperature, operatingSensor->humidity);
+    debuggingCreateAndUploadJson(operatingSensor->temperature, operatingSensor->humidity, heaterRelayState, fanRelayState);
     updateWIFIStatus(WIFI_CONNECTED);
   }
   delay(10000);

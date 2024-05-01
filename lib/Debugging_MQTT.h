@@ -1,7 +1,11 @@
-#ifndef _MQTT_H
-#define _MQTT_H
+#ifndef _DEBUGGING_MQTT_H
+#define _DEBUGGING_MQTT_H
 
 /* Debugging HiveMQ Cloud Broker settings */
+#define mqtt_server "0dc88b2a3f78492bb869b40cd2223080.s1.eu.hivemq.cloud"
+#define mqtt_username "xaviA"
+#define mqtt_password "12345678Aa"
+#define mqtt_port 8883
 #define MQTT_CLIENT_CONNECTED 1
 #define MQTT_CLIENT_DISCONNECTED 0
 
@@ -11,7 +15,7 @@
  * @param temperature The temperature value to be included in the JSON document.
  * @param humidity The humidity value to be included in the JSON document.
  */
-void createAndUploadJson(float temperature, float humidity);
+void debuggingCreateAndUploadJson(float temperature, float humidity, bool heaterState, bool fanState);
 
 /**
  * @brief Initializes the MQTT client and establishes a connection to the MQTT server.
@@ -21,14 +25,14 @@ void createAndUploadJson(float temperature, float humidity);
  * 
  * @return true if the MQTT client is successfully connected to the server, false otherwise.
  */
-uint8_t MQTTInit();
+uint8_t debuggingMQTTInit();
 
 /**
  * Attempts to reconnect the MQTT client to the broker.
  * 
  * @return true if the client is successfully reconnected, false otherwise.
  */
-uint8_t reconnectClient();
+uint8_t debuggingReconnectClient();
 
 /**
  * @brief Check the status of the MQTT client.
@@ -37,6 +41,6 @@ uint8_t reconnectClient();
  * 
  * @return true if the client is connected, false otherwise.
  */
-bool getClientStatus();
+bool debuggingGetClientStatus();
 
 #endif
