@@ -156,7 +156,7 @@ void debuggingCreateAndUploadJson(float temperature, float humidity, bool heater
   }
 }
 
-void debuggingSerialPrint(String string) 
+void debuggingSerialPrint(const String &string) 
 {
   JsonDocument doc;
   Serial.println(string);
@@ -173,4 +173,16 @@ void debuggingSerialPrint(String string)
       Serial.println("Error sending message");
     }
   }
+}
+
+/* Overload for accepting integers */
+void debuggingSerialPrint(int value) {
+  String stringValue = String(value);
+  debuggingSerialPrint(stringValue);
+}
+
+/* Overload for accepting floats */
+void debuggingSerialPrint(float value) {
+  String stringValue = String(value, 2); // Format float to 2 decimal places (or as desired)
+  debuggingSerialPrint(stringValue);
 }

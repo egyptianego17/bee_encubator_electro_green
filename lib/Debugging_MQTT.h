@@ -45,4 +45,8 @@ uint8_t debuggingReconnectClient();
  */
 bool debuggingGetClientStatus();
 
+void debuggingSerialPrint(const String &string);
+void debuggingSerialPrint(int value);
+void debuggingSerialPrint(float value);
+
 #endif
