@@ -102,11 +102,13 @@ PubSubClient client(awsEndpoint, 8883, callback, espClient);
  * @param payload The payload (message content) of the received message.
  * @param length The length of the payload.
  */
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback(char* topic, byte* payload, unsigned int length) 
+{
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++) 
+  {
     Serial.print((char)payload[i]);
   }
   Serial.println();
@@ -121,14 +123,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
  * 
  * @return true if the MQTT client is successfully connected to the server, false otherwise.
  */
-uint8_t MQTTInit() {
+uint8_t MQTTInit() 
+{
   espClient.setCACert(root_ca);
   espClient.setCertificate(certificate_pem_crt);
   espClient.setPrivateKey(private_pem_key);
  
   Serial.println("Connecting to MQTT...");
   unsigned long startTime = millis();
-  while (!client.connected() && millis() - startTime < 10000) {
+  while (!client.connected() && millis() - startTime < 10000) 
+  {
     reconnectClient();
   }
   return client.connected();  
@@ -139,10 +143,12 @@ uint8_t MQTTInit() {
  * 
  * @return true if the client is successfully reconnected, false otherwise.
  */
-uint8_t reconnectClient() {
+uint8_t reconnectClient() 
+{
   /* Loop until we’re reconnected or timeout occurs */
   unsigned long startTime = millis();
-  while (!client.connected() && millis() - startTime < 10000) {
+  while (!client.connected() && millis() - startTime < 10000) 
+  {
     Serial.print("Attempting MQTT connection… ");
     /* Attempt to connect */
     if (client.connect(THINGNAME)) {
@@ -151,7 +157,9 @@ uint8_t reconnectClient() {
       client.publish(OUTTOPIC, "Hello World!");
       /* … and resubscribe */
       client.subscribe(INTOPIC);
-    } else {
+    } 
+    else 
+    {
       Serial.print("failed, rc = ");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
@@ -192,9 +200,12 @@ void createAndUploadJson(float temperature, float humidity)
   String jsonString;
   serializeJson(doc, jsonString);
 
-  if (client.publish(OUTTOPIC, jsonString.c_str())) {
+  if (client.publish(OUTTOPIC, jsonString.c_str())) 
+  {
     Serial.println("Success sending message");
-  } else {
+  } 
+  else 
+  {
     Serial.println("Error sending message");
   }
 }

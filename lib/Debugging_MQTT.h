@@ -17,7 +17,7 @@
  * @param temperature The temperature value to be included in the JSON document.
  * @param humidity The humidity value to be included in the JSON document.
  */
-void debuggingCreateAndUploadJson(float temperature, float humidity, bool heaterState, bool fanState);
+void debuggingCreateAndUploadJson(float temperature, float humidity, bool heaterState);
 
 /**
  * @brief Initializes the MQTT client and establishes a connection to the MQTT server.
@@ -46,7 +46,19 @@ uint8_t debuggingReconnectClient();
 bool debuggingGetClientStatus();
 
 void debuggingSerialPrint(const String &string);
+
+/**
+ * @brief Sends an integer value to the MQTT broker.
+ * 
+ * @param value The integer value to be sent.
+ */
 void debuggingSerialPrint(int value);
+
+/**
+ * @brief Sends a float value to the MQTT broker.
+ * 
+ * @param value The float value to be sent.
+*/
 void debuggingSerialPrint(float value);
 
 #endif

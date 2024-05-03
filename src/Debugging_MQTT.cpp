@@ -55,11 +55,13 @@ PubSubClient debuggingClient(mqtt_server, 8883, debuggingCallback, debuggingEspC
  * @param payload The payload (message content) of the received message.
  * @param length The length of the payload.
  */
-  void debuggingCallback(char* topic, byte* payload, unsigned int length) {
+  void debuggingCallback(char* topic, byte* payload, unsigned int length) 
+  {
     Serial.print("Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) 
+    {
       Serial.print((char)payload[i]);
     }
     Serial.println();
@@ -73,7 +75,8 @@ PubSubClient debuggingClient(mqtt_server, 8883, debuggingCallback, debuggingEspC
  * 
  * @return true if the MQTT client is successfully connected to the server, false otherwise.
  */
-uint8_t debuggingMQTTInit() {
+uint8_t debuggingMQTTInit() 
+{
   debuggingEspClient.setCACert(HiveMQ_root_ca);
 
   debuggingClient.setServer(mqtt_server, mqtt_port);
@@ -81,31 +84,37 @@ uint8_t debuggingMQTTInit() {
  
   Serial.println("Connecting to MQTT...");
   unsigned long startTime = millis();
-  while (!debuggingClient.connected() && millis() - startTime < 10000) {
+  while (!debuggingClient.connected() && millis() - startTime < 10000) 
+  {
     debuggingReconnectClient();
   }
   return debuggingClient.connected();  
 }
 
 /**
- * Attempts to reconnect the MQTT client to the broker.
+ * @brief Attempts to reconnect the MQTT client to the broker.
  * 
  * @return true if the client is successfully reconnected, false otherwise.
  */
-uint8_t debuggingReconnectClient() {
+uint8_t debuggingReconnectClient() 
+{
   /* Loop until we’re reconnected or timeout occurs */
   unsigned long startTime = millis();
-  while (!debuggingClient.connected() && millis() - startTime < 10000) {
+  while (!debuggingClient.connected() && millis() - startTime < 10000) 
+  {
     Serial.print("Attempting MQTT connection… ");
     String clientId = "DEVICE0XA2";
     /* Attempt to connect */
-    if (debuggingClient.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
+    if (debuggingClient.connect(clientId.c_str(), mqtt_username, mqtt_password)) 
+    {
       Serial.println("connected!");
       /* Once connected, publish an announcement… */
       debuggingClient.publish("esp32", "Hello World!");
       /* … and resubscribe */
       debuggingClient.subscribe("listen");
-    } else {
+    } 
+    else 
+    {
       Serial.print("failed, rc = ");
       Serial.print(debuggingClient.state());
       Serial.println(" try again in 5 seconds");
@@ -134,7 +143,7 @@ bool debuggingGetClientStatus()
  * @param temperature The temperature value to be included in the JSON document.
  * @param humidity The humidity value to be included in the JSON document.
  */
-void debuggingCreateAndUploadJson(float temperature, float humidity, bool heaterState, bool fanState) 
+void debuggingCreateAndUploadJson(float temperature, float humidity, bool heaterState) 
 {
   JsonDocument doc;
 
@@ -142,47 +151,67 @@ void debuggingCreateAndUploadJson(float temperature, float humidity, bool heater
   doc["messageType"] = "data";
   doc["temperature"] = temperature;
   doc["humidity"] = humidity;
-  doc["fanState"] = fanState;
   doc["heaterState"] = heaterState;
   doc["deviceID"] = DEVICE_ID;
   doc["version"] = VERSION;
   String jsonString;
   serializeJson(doc, jsonString);
 
-  if (debuggingClient.publish("esp32", jsonString.c_str())) {
+  if (debuggingClient.publish("esp32", jsonString.c_str())) 
+  {
     Serial.println("Success sending message");
-  } else {  
+  } 
+  else 
+  {  
     Serial.println("Error sending message");
   }
 }
 
+/**
+ * @brief Sends a string message to the MQTT broker.
+ *  
+ * @param string The string message to be sent.
+*/
 void debuggingSerialPrint(const String &string) 
 {
   JsonDocument doc;
-  Serial.println(string);
-  if (debuggingClient.connected() == MQTT_CLIENT_CONNECTED) {
+  if (debuggingClient.connected() == MQTT_CLIENT_CONNECTED) 
+  {
     /* Add values in the document */
     doc["messageType"] = "serial";
     doc["serialMessage"] = string;
     String jsonString;
     serializeJson(doc, jsonString);
 
-    if (debuggingClient.publish("esp32", jsonString.c_str())) {
-      Serial.println("Success sending message");
-    } else {
+    if (debuggingClient.publish("esp32", jsonString.c_str())) 
+    {
+      /* Do nothing */
+    } 
+    else 
+    {
       Serial.println("Error sending message");
     }
   }
 }
 
-/* Overload for accepting integers */
-void debuggingSerialPrint(int value) {
+/**
+ * @brief Sends an integer value to the MQTT broker.
+ * 
+ * @param value The integer value to be sent.
+ */
+void debuggingSerialPrint(int value) 
+{
   String stringValue = String(value);
   debuggingSerialPrint(stringValue);
 }
 
-/* Overload for accepting floats */
-void debuggingSerialPrint(float value) {
-  String stringValue = String(value, 2); // Format float to 2 decimal places (or as desired)
+/**
+ * @brief Sends a float value to the MQTT broker.
+ * 
+ * @param value The float value to be sent.
+*/
+void debuggingSerialPrint(float value) 
+{
+  String stringValue = String(value, 2); /* Format float to 2 decimal places (or as desired) */
   debuggingSerialPrint(stringValue);
 }

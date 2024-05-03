@@ -92,7 +92,7 @@ uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t s
  * @param heaterStatus The status of the heater (true for on, false for off).
  * @param fanStatus The status of the fan (true for on, false for off).
  */
-void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatuts)
+void updateGUI(float temprature, float humidity, bool heaterStatus)
 {
   tft.fillScreen(ST77XX_WHITE);
   drawText("System is stable", MIDDLE_ALLIGNMENT, ST77XX_BLACK, 1, 20);
@@ -105,17 +105,6 @@ void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatu
   drawText("  Heater: ", LEFT_ALLIGNMENT, ST77XX_BLUE, 1, 90);
   tft.setTextColor(ST77XX_ORANGE);
   if (heaterStatus == true)
-  {
-    tft.print("On");
-  }
-  else
-  {
-    tft.print("Off");
-  }
-
-  drawText("  Fan: ", LEFT_ALLIGNMENT, ST77XX_BLUE, 1, 110);
-  tft.setTextColor(ST77XX_ORANGE);
-  if (fanSatuts == true)
   {
     tft.print("On");
   }

@@ -9,6 +9,7 @@
 #define WIFI_CONNECTED 1
 #define WIFI_CONNECTING 2
 
+
 /**
  * @brief Initializes the LCD display.
  * 
@@ -40,7 +41,7 @@ uint8_t drawText(const char text[], uint8_t allignment, uint16_t color, uint8_t 
  * @param heaterStatus The status of the heater (true for on, false for off).
  * @param fanStatus The status of the fan (true for on, false for off).
  */
-void updateGUI(float temprature, float humidity, bool heaterStatus, bool fanSatuts);
+void updateGUI(float temprature, float humidity, bool heaterStatus);
 
 /**
  * Displays a warning screen on the TFT display.

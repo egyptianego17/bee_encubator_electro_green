@@ -10,6 +10,7 @@ DHTSensor* operatingSensor;
 DHT primaryDHT22(PRIMIARY_SENSOR_PIN, DHT22);
 DHT backupDHT22(BACKUP_SENSOR_PIN, DHT22);
 
+uint8_t currentHeater = HEATER_PIN_1;
 /**
  * @brief Updates the temperature and humidity readings from the primary and backup sensors.
  * 
@@ -88,9 +89,19 @@ uint8_t sensorsUpdateCheck()
  */
 uint8_t sensorsActuatorsInit()
 {
-    
-  // pinMode(HEATER_PIN_IN1, OUTPUT);
-  // pinMode(FAN_PIN_IN2, OUTPUT);
+  pinMode(FAN_PIN_1, OUTPUT);
+  pinMode(FAN_PIN_2, OUTPUT);
+  pinMode(HEATER_PIN_1, OUTPUT);
+  pinMode(HEATER_PIN_2, OUTPUT);
+  pinMode(HEATER_PIN_3, OUTPUT);
+  pinMode(WATER_PUMP_PIN, OUTPUT);
+
+  digitalWrite(FAN_PIN_1, LOW);
+  digitalWrite(FAN_PIN_2, HIGH);
+  digitalWrite(HEATER_PIN_1, HIGH);
+  digitalWrite(HEATER_PIN_2, HIGH);
+  digitalWrite(HEATER_PIN_3, HIGH);
+  digitalWrite(WATER_PUMP_PIN, HIGH);
 
   primaryDHT22.begin();
   backupDHT22.begin();
@@ -102,6 +113,9 @@ uint8_t sensorsActuatorsInit()
 
   primarySensor->sensorMalfunctionFlag = DHT22_OK;
   backupSensor->sensorMalfunctionFlag = DHT22_OK;
+
+  primarySensor->sensorID = 1;
+  backupSensor->sensorID = 2;
 
   if(isnan(primarySensor->temperature) || isnan(primarySensor->humidity))
   {
@@ -138,8 +152,83 @@ uint8_t sensorsActuatorsInit()
  * @param heaterRelayState The state of the heater relay. Set to `true` to turn on the heater, or `false` to turn it off.
  * @param fanRelayState The state of the fan relay. Set to `true` to turn on the fan, or `false` to turn it off.
  */
-void actuateOnRelays(bool heaterRelayState, bool fanRelayState)
+void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
 {
-  // digitalWrite(HEATER_PIN_IN1, !heaterRelayState);
-  // digitalWrite(FAN_PIN_IN2, !fanRelayState);
+  if (heaterRelayState)
+  {
+    switch(currentHeater)
+    {
+      case HEATER_PIN_1:
+        digitalWrite(HEATER_PIN_1, LOW);
+        digitalWrite(HEATER_PIN_2, HIGH);
+        digitalWrite(HEATER_PIN_3, HIGH);
+        if (isStateChanged == true)
+        {
+          currentHeater = HEATER_PIN_2;
+        }
+        break;
+      case HEATER_PIN_2:
+        digitalWrite(HEATER_PIN_2, LOW);
+        digitalWrite(HEATER_PIN_1, HIGH);
+        digitalWrite(HEATER_PIN_3, HIGH);
+        if (isStateChanged == true)
+        {
+        currentHeater = HEATER_PIN_3;
+        }
+        break;
+      case HEATER_PIN_3:
+        digitalWrite(HEATER_PIN_3, LOW);
+        digitalWrite(HEATER_PIN_1, HIGH);
+        digitalWrite(HEATER_PIN_2, HIGH);
+        if (isStateChanged == true)
+        {
+        currentHeater = HEATER_PIN_1;
+        }
+        break;
+      default:
+        digitalWrite(HEATER_PIN_1, LOW);
+        digitalWrite(HEATER_PIN_2, HIGH);
+        digitalWrite(HEATER_PIN_3, HIGH);
+        if (isStateChanged == true)
+        {
+          currentHeater = HEATER_PIN_1;
+        }
+        break;
+    }
+  }
+  else
+  {
+    digitalWrite(HEATER_PIN_1, HIGH);
+    digitalWrite(HEATER_PIN_2, HIGH);
+    digitalWrite(HEATER_PIN_3, HIGH);
+  }
+  Serial.print("Current heater: ");
+  Serial.println(currentHeater);
 }
+
+/**
+ * @brief Adds a water drop to the reservoir.
+ * 
+ * This function turns on the water pump for a specified duration to add a water drop to the reservoir.
+ * 
+ * @param duration The duration for which the water pump should be turned on.
+*/
+void addWaterDrop(uint32_t duration)
+{
+      digitalWrite(WATER_PUMP_PIN, LOW);
+      delay(duration);
+      digitalWrite(WATER_PUMP_PIN, HIGH);
+      Serial.println("Water Drop Added");
+}
+
+/**
+ * @brief Switches the state of the fans.
+ * 
+ * This function toggles the state of the fans to decrease the load on the fans.
+ */
+void switchFans()
+{
+  digitalWrite(FAN_PIN_1, !digitalRead(FAN_PIN_1));
+  digitalWrite(FAN_PIN_2, !digitalRead(FAN_PIN_2));
+}
+

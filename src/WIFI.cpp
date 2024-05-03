@@ -25,7 +25,8 @@ uint8_t WIFIInit()
   WiFi.begin(ssid, password);
 
   unsigned long startTime = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) {
+  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) 
+  {
       delay(500);
       Serial.print(".");
   }
@@ -58,16 +59,20 @@ uint8_t reconnectWiFi() {
 
         /* Wait for the connection to be established */
         int attempt = 0;
-        while (WiFi.status() != WL_CONNECTED && attempt < 10) {
+        while (WiFi.status() != WL_CONNECTED && attempt < 10) 
+        {
             delay(500);
             Serial.print(".");
             attempt++;
         }
 
-        if (WiFi.status() == WL_CONNECTED) {
+        if (WiFi.status() == WL_CONNECTED) 
+        {
             /* WiFi is successfully connected */
             Serial.println("\nConnected to WiFi");
-        } else {
+        } 
+        else 
+        {
             /* Failed to connect to WiFi */
             Serial.println("\nFailed to connect to WiFi");
         }

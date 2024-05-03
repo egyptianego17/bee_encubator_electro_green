@@ -3,13 +3,21 @@
 
 #define PRIMIARY_SENSOR_PIN         GPIO_NUM_0
 #define BACKUP_SENSOR_PIN           GPIO_NUM_27
-#define HEATER_PIN_IN1              GPIO_NUM_4
-#define FAN_PIN_IN2                 GPIO_NUM_19
+#define HEATER_PIN_1                GPIO_NUM_4 
+#define HEATER_PIN_2                GPIO_NUM_26
+#define HEATER_PIN_3                GPIO_NUM_12
+#define FAN_PIN_1                   GPIO_NUM_19
+#define FAN_PIN_2                   GPIO_NUM_14
+#define WATER_PUMP_PIN              GPIO_NUM_13
+#define PUMP_DELAY_TIME             1000
+#define WATER_DROP_INTERVAL         1000*60*1
+#define FANS_SWITCH_INTERVAL        1000*60*0.5
 
 typedef struct{
   float temperature;
   float humidity;  
   bool sensorMalfunctionFlag; /* 0 -> NO ERROR, 1 -> ERROR */
+  uint8_t sensorID;
 } DHTSensor;
 
 extern DHTSensor* operatingSensor;
@@ -50,7 +58,17 @@ uint8_t sensorsActuatorsInit();
  * @param heaterRelayState The state of the heater relay. Set to `true` to turn on the heater, or `false` to turn it off.
  * @param fanRelayState The state of the fan relay. Set to `true` to turn on the fan, or `false` to turn it off.
  */
-void actuateOnRelays(bool heaterRelayState, bool fanRelayState);
+void actuateOnRelays(bool heaterRelayState, bool isStateChanged);
 
+/**
+ * @brief Adds a water drop to the reservoir.
+ * 
+ * This function turns on the water pump for a specified duration to add a water drop to the reservoir.
+ * 
+ * @param duration The duration for which the water pump should be turned on.
+*/
+void addWaterDrop(uint32_t duration);
+
+void switchFans();
 #endif
 
