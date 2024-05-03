@@ -144,12 +144,14 @@ void debuggingCreateAndUploadJson(float temperature, float humidity, bool heater
   doc["humidity"] = humidity;
   doc["fanState"] = fanState;
   doc["heaterState"] = heaterState;
+  doc["deviceID"] = DEVICE_ID;
+  doc["version"] = VERSION;
   String jsonString;
   serializeJson(doc, jsonString);
 
   if (debuggingClient.publish("esp32", jsonString.c_str())) {
     Serial.println("Success sending message");
-  } else {
+  } else {  
     Serial.println("Error sending message");
   }
 }
@@ -157,16 +159,18 @@ void debuggingCreateAndUploadJson(float temperature, float humidity, bool heater
 void debuggingSerialPrint(String string) 
 {
   JsonDocument doc;
+  Serial.println(string);
+  if (debuggingClient.connected() == MQTT_CLIENT_CONNECTED) {
+    /* Add values in the document */
+    doc["messageType"] = "serial";
+    doc["serialMessage"] = string;
+    String jsonString;
+    serializeJson(doc, jsonString);
 
-  /* Add values in the document */
-  doc["messageType"] = "serial";
-  doc["serialMessage"] = string;
-  String jsonString;
-  serializeJson(doc, jsonString);
-
-  if (debuggingClient.publish("esp32  ", jsonString.c_str())) {
-    Serial.println("Success sending message");
-  } else {
-    Serial.println("Error sending message");
+    if (debuggingClient.publish("esp32", jsonString.c_str())) {
+      Serial.println("Success sending message");
+    } else {
+      Serial.println("Error sending message");
+    }
   }
 }

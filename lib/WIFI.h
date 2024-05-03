@@ -2,8 +2,8 @@
 #define _WIFI_H
 
 /* WiFi settings */
-#define ssid "zucse2022"
-#define password "zucse2024"
+#define ssid "WE_DFD258"
+#define password "23735162274"
 
 #define WIFI_STATUS_CONNECTED 3
 #define WIFI_STATUS_DISCONNECTED 6
