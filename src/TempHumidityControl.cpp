@@ -29,13 +29,13 @@ uint8_t sensorsUpdateCheck()
   backupSensor->temperature=backupDHT22.readTemperature();
   backupSensor->humidity=backupDHT22.readHumidity();
 
-  Serial.println("Primary Sensor Temperature: ");
+  Serial.print("Primary Sensor Temperature: ");
   Serial.println(primarySensor->temperature);
-  Serial.println("Primary Sensor Humidity: ");
+  Serial.print("Primary Sensor Humidity: ");
   Serial.println(primarySensor->humidity);
-  Serial.println("Backup Sensor Temperature: ");
+  Serial.print("Backup Sensor Temperature: ");
   Serial.println(backupSensor->temperature);
-  Serial.println("Backup Sensor Humidity: ");
+  Serial.print("Backup Sensor Humidity: ");
   Serial.println(backupSensor->humidity);
 
   if(isnan(primarySensor->temperature) || isnan(primarySensor->humidity))
@@ -56,9 +56,9 @@ uint8_t sensorsUpdateCheck()
     backupSensor->sensorMalfunctionFlag = DHT22_OK;
   }
 
-  Serial.println("Primary Sensor Malfunction Flag: ");
+  Serial.print("Primary Sensor Malfunction Flag: ");
   Serial.println(primarySensor->sensorMalfunctionFlag);
-  Serial.println("Backup Sensor Malfunction Flag: ");
+  Serial.print("Backup Sensor Malfunction Flag: ");
   Serial.println(backupSensor->sensorMalfunctionFlag);
 
   if (primarySensor->sensorMalfunctionFlag == DHT22_ERROR && backupSensor->sensorMalfunctionFlag == DHT22_ERROR)

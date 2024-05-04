@@ -38,8 +38,6 @@ void setup(void) {
     }
     esp_task_wdt_reset();
   }
-  WIFIInit();
-  OTAUpdate();
   delay(2500);
   xTaskCreate(controlFans, "Fans Control Task", 8000, NULL, 1, NULL);
   xTaskCreate(controlHeaters, "Heaters Control Task", 8000, NULL, 2, NULL);
@@ -133,10 +131,10 @@ void GUITask(void* parameter)
 
 void iotTask(void* parameter)
 {
-  Serial.println("Start Task");
   if (WIFIInit() == WIFI_STATUS_CONNECTED && debuggingMQTTInit() == MQTT_CLIENT_CONNECTED)
   {
     wifiStatus = WIFI_CONNECTED;
+    OTAUpdate();
   }
   else
   {
@@ -153,7 +151,7 @@ void iotTask(void* parameter)
       if (reconnectWiFi() == WIFI_STATUS_CONNECTED)
       {
         wifiStatus = WIFI_CONNECTING;
-        if (debuggingReconnectClient() == MQTT_CLIENT_CONNECTED)
+        if (debuggingMQTTInit() == MQTT_CLIENT_CONNECTED && debuggingReconnectClient() == MQTT_CLIENT_CONNECTED)
         {
           wifiStatus = WIFI_CONNECTED;
         }
