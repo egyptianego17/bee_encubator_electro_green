@@ -111,7 +111,7 @@ uint8_t debuggingReconnectClient()
       /* Once connected, publish an announcement… */
       debuggingClient.publish("esp32", "Hello World!");
       /* … and resubscribe */
-      debuggingClient.subscribe("listen");
+      debuggingClient.subscribe("esp32");
     } 
     else 
     {
