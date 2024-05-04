@@ -1,9 +1,10 @@
 #include <HTTPClient.h>
 #include <Update.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include <Firebase_ESP_Client.h>                            
 #include "addons/TokenHelper.h"                            
 #include "../lib/OTA.h"                                     
-
 
 FirebaseData fbdo;
 
@@ -11,6 +12,9 @@ FirebaseAuth auth;
 FirebaseConfig config;
 
 bool taskCompleted = false;
+
+/* URL for the endpoint */
+const char* url = "https://mere-gerta-xavis.koyeb.app/latest-stable-firmware";
 
 String swversion = "__FILE__";
 
@@ -38,12 +42,64 @@ void fcsDownloadCallback(FCS_DownloadStatusInfo info)
     }
 }
 
-void OTAUpdate()
+String getFirmwareVersion() {
+    // Create an instance of the HTTPClient
+    HTTPClient http;
+    
+    // Begin the HTTP GET request
+    http.begin(url);
+    
+    // Send the request and receive the response code
+    int httpCode = http.GET();
+    
+    // Check the response code
+    if (httpCode > 0) {
+        // If successful, print the response code
+        Serial.printf("HTTP Response code: %d\n", httpCode);
+        
+        // Get the response as a string
+        String response = http.getString();
+        
+        // Parse the JSON response
+        StaticJsonDocument<200> doc;
+        DeserializationError error = deserializeJson(doc, response);
+        
+        // Check for parsing errors
+        if (error) {
+            Serial.print("Failed to parse JSON: ");
+            Serial.println(error.c_str());
+            // End the HTTP request
+            http.end();
+            return ""; // Return an empty string in case of parsing error
+        } else {
+            // Extract the firmwareVersion value from the JSON response
+            const char* firmwareVersion = doc["firmwareVersion"];
+            
+            // End the HTTP request
+            http.end();
+            
+            // Return the firmware version as a string
+            return String(firmwareVersion);
+        }
+    } else {
+        // If there was an error, print the error code
+        Serial.printf("HTTP GET failed, error: %s\n", http.errorToString(httpCode).c_str());
+        
+        // End the HTTP request
+        http.end();
+        
+        // Return an empty string in case of HTTP request error
+        return "";
+    }
+}
+
+void OTAUpdate(String version)
 {
     swversion = (swversion.substring((swversion.indexOf(".")), (swversion.lastIndexOf("\\")) + 1))+" "+__DATE__+" "+__TIME__;   
     Serial.print("SW version: ");
     Serial.println(swversion);
     Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
+    String firmwarePath = FIRMWARE_PATH + version + "/firmware.bin";
     config.api_key = API_KEY;
     auth.user.email = USER_EMAIL;
     auth.user.password = USER_PASSWORD;
@@ -71,13 +127,13 @@ void OTAUpdate()
         // In ESP8266, this function will allocate 16k+ memory for internal SSL client.
         if (!Firebase.Storage.downloadOTA(
             &fbdo, STORAGE_BUCKET_ID                      /* Firebase Storage bucket id */, 
-            FIRMWARE_PATH                                 /* path of firmware file stored in the bucket */, 
+            firmwarePath                                 /* path of firmware file stored in the bucket */, 
             fcsDownloadCallback                           /* callback function */
             )){
             Serial.println(fbdo.errorReason());
             } else {
                                                           // Delete the file after update
-            Serial.printf("Delete file... %s\n",Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID,FIRMWARE_PATH) ? "ok" : fbdo.errorReason().c_str());
+            Serial.printf("Delete file... %s\n",Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID,firmwarePath) ? "ok" : fbdo.errorReason().c_str());
 
             Serial.println("Restarting...\n\n");
             delay(2000);

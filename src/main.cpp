@@ -134,7 +134,24 @@ void iotTask(void* parameter)
   if (WIFIInit() == WIFI_STATUS_CONNECTED && debuggingMQTTInit() == MQTT_CLIENT_CONNECTED)
   {
     wifiStatus = WIFI_CONNECTED;
-    OTAUpdate();
+    String LatestfirmwareVersion = getFirmwareVersion();
+
+    /* Get the latest stable firmware version and print it */
+    if (LatestfirmwareVersion.length() > 0) {
+        Serial.print("Latest stable firmware version: ");
+        Serial.println(LatestfirmwareVersion);
+        if (LatestfirmwareVersion == VERSION)
+        {
+          Serial.println("Firmware is up to date.");
+        }
+        else
+        {
+          Serial.println("Firmware is outdated, start updating...");
+          OTAUpdate(LatestfirmwareVersion);
+        }
+    } else {
+        Serial.println("Failed to get firmware version.");
+    }
   }
   else
   {
