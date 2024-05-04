@@ -147,7 +147,7 @@ void iotTask(void* parameter)
     {
       wifiStatus = WIFI_DISCONNECTED;
       Serial.println("Reconnecting to MQTT...");
-      if (debuggingReconnectClient() == WIFI_STATUS_CONNECTED)
+      if (reconnectWiFi() == WIFI_STATUS_CONNECTED)
       {
         wifiStatus = WIFI_CONNECTING;
         if (debuggingReconnectClient() == MQTT_CLIENT_CONNECTED)

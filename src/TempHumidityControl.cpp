@@ -173,7 +173,7 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
         digitalWrite(HEATER_PIN_3, HIGH);
         if (isStateChanged == true)
         {
-        currentHeater = HEATER_PIN_3;
+          currentHeater = HEATER_PIN_3;
         }
         break;
       case HEATER_PIN_3:
@@ -182,7 +182,7 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
         digitalWrite(HEATER_PIN_2, HIGH);
         if (isStateChanged == true)
         {
-        currentHeater = HEATER_PIN_1;
+          currentHeater = HEATER_PIN_1;
         }
         break;
       default:
@@ -215,10 +215,10 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
 */
 void addWaterDrop(uint32_t duration)
 {
-      digitalWrite(WATER_PUMP_PIN, LOW);
-      delay(duration);
-      digitalWrite(WATER_PUMP_PIN, HIGH);
-      Serial.println("Water Drop Added");
+  digitalWrite(WATER_PUMP_PIN, LOW);
+  delay(duration);
+  digitalWrite(WATER_PUMP_PIN, HIGH);
+  Serial.println("Water Drop Added");
 }
 
 /**
