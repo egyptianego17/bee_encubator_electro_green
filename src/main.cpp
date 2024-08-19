@@ -8,10 +8,10 @@
 #include "../lib/OTA.h"
 #include "../lib/STD_TYPES.h"
 
-const uint8_t targetTempreature = 30.0;
+const uint8_t targetTempreature = 36.5;
 const uint8_t targetHumidity = 65;
 const uint8_t humidityPrecision = 5;
-const uint8_t tempPrecision = 0.1;
+const uint8_t tempPrecision = 1;
 uint32_t waterLastDrop = 0;
 bool heaterRelayState = false;
 uint8_t wifiStatus = WIFI_CONNECTING;
@@ -26,18 +26,19 @@ void setup(void) {
   Serial.begin(115200);
 
   LCDInit();
-  if (sensorsActuatorsInit() == STD_TYPES_NOK)
-  {
-    esp_task_wdt_init(5, true); 
-    esp_task_wdt_add(NULL); /* add current thread to WDT watch */
-    while(sensorsActuatorsInit() != STD_TYPES_OK)
-    {
-      Serial.println("ERROR");
-      warningScreen("Sensors Error");
-      delay(500);
-    }
-    esp_task_wdt_reset();
-  }
+  // if (sensorsActuatorsInit() == STD_TYPES_NOK)
+  // {
+  //   esp_task_wdt_init(5, true); 
+  //   esp_task_wdt_add(NULL); /* add current thread to WDT watch */
+  //   while(sensorsActuatorsInit() != STD_TYPES_OK)
+  //   {
+  //     Serial.println("ERROR");
+  //     warningScreen("Sensors Error");
+  //     delay(500);
+  //   }
+  //   esp_task_wdt_reset();
+  // }
+  sensorsActuatorsInit();
   delay(2500);
   xTaskCreate(controlFans, "Fans Control Task", 8000, NULL, 1, NULL);
   xTaskCreate(controlHeaters, "Heaters Control Task", 8000, NULL, 2, NULL);
@@ -64,6 +65,7 @@ void controlFans(void* parameter)
 void controlHeaters(void* parameter)
 {
   bool isStateChanged = false;
+  uint32_t heaterWorkTime = millis();;
   while(1)
   {
     /* Update and check sensors readings */
@@ -87,9 +89,15 @@ void controlHeaters(void* parameter)
       isStateChanged = true;
       heaterRelayState = true;
     }
-    else if((operatingSensor->temperature < targetTempreature - tempPrecision) && (heaterRelayState == true))
+    else if((operatingSensor->temperature < targetTempreature - tempPrecision) && (heaterRelayState == true) && (millis()- heaterWorkTime < 1000*60))
     {
       isStateChanged = false;
+      heaterRelayState = true;
+    }
+    else if((operatingSensor->temperature < targetTempreature - tempPrecision) && (heaterRelayState == true) && (millis()-heaterWorkTime > 1000*60))
+    {
+      heaterWorkTime = millis();
+      isStateChanged = true;
       heaterRelayState = true;
     }
     else if (operatingSensor->temperature > targetTempreature + tempPrecision)
@@ -134,20 +142,20 @@ void iotTask(void* parameter)
   if (WIFIInit() == WIFI_STATUS_CONNECTED && debuggingMQTTInit() == MQTT_CLIENT_CONNECTED)
   {
     wifiStatus = WIFI_CONNECTED;
-    String LatestfirmwareVersion = getFirmwareVersion();
+    String latestfirmwareVersion = getFirmwareVersion();
 
     /* Get the latest stable firmware version and print it */
-    if (LatestfirmwareVersion.length() > 0) {
+    if (latestfirmwareVersion.length() > 0) {
         Serial.print("Latest stable firmware version: ");
-        Serial.println(LatestfirmwareVersion);
-        if (LatestfirmwareVersion == VERSION)
+        Serial.println(latestfirmwareVersion);
+        if (latestfirmwareVersion == VERSION)
         {
           Serial.println("Firmware is up to date.");
         }
         else
         {
           Serial.println("Firmware is outdated, start updating...");
-          OTAUpdate(LatestfirmwareVersion);
+          OTAUpdate(latestfirmwareVersion);
         }
     } else {
         Serial.println("Failed to get firmware version.");
@@ -188,7 +196,9 @@ void iotTask(void* parameter)
       debuggingSerialPrint(message);
       message = "Operating Sensor ID: " + String(operatingSensor->sensorID);
       debuggingSerialPrint(message);
-      message = "Time since last water drop: " + String(millis() - waterLastDrop);
+      message = "Time since last water drop: " + (String((millis() - waterLastDrop)/1000));
+      debuggingSerialPrint(message);
+      message = "Up time: " + (String(millis()/1000));
       debuggingSerialPrint(message);
       debuggingCreateAndUploadJson(operatingSensor->temperature, operatingSensor->humidity, heaterRelayState);
     }

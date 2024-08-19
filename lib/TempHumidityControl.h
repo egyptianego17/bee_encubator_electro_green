@@ -9,9 +9,9 @@
 #define FAN_PIN_1                   GPIO_NUM_19
 #define FAN_PIN_2                   GPIO_NUM_14
 #define WATER_PUMP_PIN              GPIO_NUM_13
-#define PUMP_DELAY_TIME             1000
-#define WATER_DROP_INTERVAL         1000*60*1
-#define FANS_SWITCH_INTERVAL        1000*60*0.5
+#define PUMP_DELAY_TIME             700
+#define WATER_DROP_INTERVAL         1000*60*10
+#define FANS_SWITCH_INTERVAL        1000*60*5
 
 typedef struct{
   float temperature;

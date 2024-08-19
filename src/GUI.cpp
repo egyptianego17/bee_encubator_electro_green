@@ -95,7 +95,7 @@ uint8_t drawText(const char *text, uint8_t allignment, uint16_t color, uint8_t s
 void updateGUI(float temprature, float humidity, bool heaterStatus)
 {
   tft.fillScreen(ST77XX_WHITE);
-  drawText("BE V1.0.3", MIDDLE_ALLIGNMENT, ST77XX_BLACK, 1, 20);
+  drawText("BE V1.0.9", MIDDLE_ALLIGNMENT, ST77XX_BLACK, 1, 20);
   drawText("  Temperature: ", LEFT_ALLIGNMENT, ST77XX_BLUE, 1, 50);
   tft.setTextColor(ST77XX_ORANGE);
   tft.print(temprature);

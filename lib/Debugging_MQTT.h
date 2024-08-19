@@ -9,7 +9,7 @@
 #define MQTT_CLIENT_CONNECTED 1
 #define MQTT_CLIENT_DISCONNECTED 0
 #define DEVICE_ID "DEVICE0XA2"
-#define VERSION "1.0.3"
+#define VERSION "1.0.9"
 
 /**
  * @brief Creates a JSON document with temperature and humidity values and publishes it to an MQTT topic.

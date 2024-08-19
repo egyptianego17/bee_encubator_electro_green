@@ -1,13 +1,11 @@
 #include <HTTPClient.h>
 #include <Update.h>
-#include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include <Firebase_ESP_Client.h>                            
-#include "addons/TokenHelper.h"                            
-#include "../lib/OTA.h"                                     
+#include <Firebase_ESP_Client.h>
+#include "addons/TokenHelper.h"
+#include "../lib/OTA.h"
 
 FirebaseData fbdo;
-
 FirebaseAuth auth;
 FirebaseConfig config;
 
@@ -43,52 +41,29 @@ void fcsDownloadCallback(FCS_DownloadStatusInfo info)
 }
 
 String getFirmwareVersion() {
-    // Create an instance of the HTTPClient
     HTTPClient http;
-    
-    // Begin the HTTP GET request
     http.begin(url);
-    
-    // Send the request and receive the response code
+
     int httpCode = http.GET();
-    
-    // Check the response code
     if (httpCode > 0) {
-        // If successful, print the response code
         Serial.printf("HTTP Response code: %d\n", httpCode);
-        
-        // Get the response as a string
         String response = http.getString();
-        
-        // Parse the JSON response
         StaticJsonDocument<200> doc;
         DeserializationError error = deserializeJson(doc, response);
-        
-        // Check for parsing errors
+
         if (error) {
             Serial.print("Failed to parse JSON: ");
             Serial.println(error.c_str());
-            // End the HTTP request
             http.end();
-            return ""; // Return an empty string in case of parsing error
+            return "";
         } else {
-            // Extract the firmwareVersion value from the JSON response
             const char* firmwareVersion = doc["firmwareVersion"];
-            
-            // End the HTTP request
             http.end();
-            
-            // Return the firmware version as a string
             return String(firmwareVersion);
         }
     } else {
-        // If there was an error, print the error code
         Serial.printf("HTTP GET failed, error: %s\n", http.errorToString(httpCode).c_str());
-        
-        // End the HTTP request
         http.end();
-        
-        // Return an empty string in case of HTTP request error
         return "";
     }
 }
@@ -106,38 +81,30 @@ void OTAUpdate(String version)
     config.token_status_callback = tokenStatusCallback; 
     Firebase.begin(&config, &auth);
 
-    /* Assign download buffer size in byte */
-    // Data to be downloaded will read as multiple chunks with this size, to compromise between speed and memory used for buffering.
-    // The memory from external SRAM/PSRAM will not use in the TCP client internal rx buffer.
     config.fcs.download_buffer_size = 2048;
 
     Firebase.reconnectWiFi(true);
 
-    // Firebase.ready() should be called repeatedly to handle authentication tasks.
-    
     if (Firebase.ready() && !taskCompleted)
     {
         taskCompleted = true;
-
-        // If you want to get download url to use with your own OTA update process using core update library,
-        // see Metadata.ino example
-
         Serial.println("\nChecking for new firmware update available...\n");
 
-        // In ESP8266, this function will allocate 16k+ memory for internal SSL client.
         if (!Firebase.Storage.downloadOTA(
-            &fbdo, STORAGE_BUCKET_ID                      /* Firebase Storage bucket id */, 
-            firmwarePath                                 /* path of firmware file stored in the bucket */, 
-            fcsDownloadCallback                           /* callback function */
-            )){
+            &fbdo, STORAGE_BUCKET_ID,
+            firmwarePath,
+            fcsDownloadCallback))
+        {
             Serial.println(fbdo.errorReason());
-            } else {
-                                                          // Delete the file after update
-            Serial.printf("Delete file... %s\n",Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID,firmwarePath) ? "ok" : fbdo.errorReason().c_str());
+        }
+        else
+        {
+            Serial.printf("Delete file... %s\n", Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID, firmwarePath) ? "ok" : fbdo.errorReason().c_str());
 
             Serial.println("Restarting...\n\n");
             delay(2000);
-            ESP.restart();  
-            }
+            ESP.restart();
+        }
     }
 }
+
