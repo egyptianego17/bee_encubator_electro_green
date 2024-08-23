@@ -26,18 +26,18 @@ void setup(void) {
   Serial.begin(115200);
 
   LCDInit();
-  // if (sensorsActuatorsInit() == STD_TYPES_NOK)
-  // {
-  //   esp_task_wdt_init(5, true); 
-  //   esp_task_wdt_add(NULL); /* add current thread to WDT watch */
-  //   while(sensorsActuatorsInit() != STD_TYPES_OK)
-  //   {
-  //     Serial.println("ERROR");
-  //     warningScreen("Sensors Error");
-  //     delay(500);
-  //   }
-  //   esp_task_wdt_reset();
-  // }
+  if (sensorsActuatorsInit() == STD_TYPES_NOK)
+  {
+    esp_task_wdt_init(5, true); 
+    esp_task_wdt_add(NULL); /* add current thread to WDT watch */
+    while(sensorsActuatorsInit() != STD_TYPES_OK)
+    {
+      Serial.println("ERROR");
+      warningScreen("Sensors Error");
+      delay(500);
+    }
+    esp_task_wdt_reset();
+  }
   sensorsActuatorsInit();
   delay(2500);
   xTaskCreate(controlFans, "Fans Control Task", 8000, NULL, 1, NULL);
