@@ -2,15 +2,16 @@
 #define _TEMPHUMIDITYCONTROL_H
 
 #define PRIMIARY_SENSOR_PIN         GPIO_NUM_0
-#define BACKUP_SENSOR_PIN           GPIO_NUM_27
-#define HEATER_PIN_1                GPIO_NUM_4 
-#define HEATER_PIN_2                GPIO_NUM_26
-#define HEATER_PIN_3                GPIO_NUM_12
-#define FAN_PIN_1                   GPIO_NUM_19
-#define FAN_PIN_2                   GPIO_NUM_14
-#define WATER_PUMP_PIN              GPIO_NUM_13
-#define PUMP_DELAY_TIME             700
-#define WATER_DROP_INTERVAL         1000*60*10
+#define BACKUP_SENSOR_PIN           GPIO_NUM_4
+#define HEATER_PIN_1                GPIO_NUM_32
+#define HEATER_PIN_2                GPIO_NUM_33
+#define FAN_PIN_1                   GPIO_NUM_25
+#define FAN_PIN_2                   GPIO_NUM_26
+#define HUMIDIFIER_PIN              GPIO_NUM_27
+#define AIR_PUMP_PIN                GPIO_NUM_15
+#define VALVE_PIN                   GPIO_NUM_2
+#define PUMP_DELAY_TIME             2000
+#define WATER_DROP_INTERVAL         1000*10
 #define FANS_SWITCH_INTERVAL        1000*60*5
 
 typedef struct{

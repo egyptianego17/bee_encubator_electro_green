@@ -93,15 +93,13 @@ uint8_t sensorsActuatorsInit()
   pinMode(FAN_PIN_2, OUTPUT);
   pinMode(HEATER_PIN_1, OUTPUT);
   pinMode(HEATER_PIN_2, OUTPUT);
-  pinMode(HEATER_PIN_3, OUTPUT);
-  pinMode(WATER_PUMP_PIN, OUTPUT);
+  pinMode(HUMIDIFIER_PIN, OUTPUT);
 
   digitalWrite(FAN_PIN_1, LOW);
   digitalWrite(FAN_PIN_2, HIGH);
   digitalWrite(HEATER_PIN_1, HIGH);
   digitalWrite(HEATER_PIN_2, HIGH);
-  digitalWrite(HEATER_PIN_3, HIGH);
-  digitalWrite(WATER_PUMP_PIN, HIGH);
+  digitalWrite(HUMIDIFIER_PIN, HIGH);
 
   primaryDHT22.begin();
   backupDHT22.begin();
@@ -161,7 +159,6 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
       case HEATER_PIN_1:
         digitalWrite(HEATER_PIN_1, LOW);
         digitalWrite(HEATER_PIN_2, HIGH);
-        digitalWrite(HEATER_PIN_3, HIGH);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_2;
@@ -170,16 +167,6 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
       case HEATER_PIN_2:
         digitalWrite(HEATER_PIN_2, LOW);
         digitalWrite(HEATER_PIN_1, HIGH);
-        digitalWrite(HEATER_PIN_3, HIGH);
-        if (isStateChanged == true)
-        {
-          currentHeater = HEATER_PIN_3;
-        }
-        break;
-      case HEATER_PIN_3:
-        digitalWrite(HEATER_PIN_3, LOW);
-        digitalWrite(HEATER_PIN_1, HIGH);
-        digitalWrite(HEATER_PIN_2, HIGH);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_1;
@@ -188,7 +175,6 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
       default:
         digitalWrite(HEATER_PIN_1, LOW);
         digitalWrite(HEATER_PIN_2, HIGH);
-        digitalWrite(HEATER_PIN_3, HIGH);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_1;
@@ -200,7 +186,6 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
   {
     digitalWrite(HEATER_PIN_1, HIGH);
     digitalWrite(HEATER_PIN_2, HIGH);
-    digitalWrite(HEATER_PIN_3, HIGH);
   }
   Serial.print("Current heater: ");
   Serial.println(currentHeater);
@@ -215,9 +200,9 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
 */
 void addWaterDrop(uint32_t duration)
 {
-  digitalWrite(WATER_PUMP_PIN, LOW);
+  digitalWrite(HUMIDIFIER_PIN, LOW);
   delay(duration);
-  digitalWrite(WATER_PUMP_PIN, HIGH);
+  digitalWrite(HUMIDIFIER_PIN, HIGH);
   Serial.println("Water Drop Added");
 }
 

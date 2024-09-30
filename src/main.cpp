@@ -55,6 +55,7 @@ void controlFans(void* parameter)
 {
   while(1)
   {
+    Serial.println("Switching Fans...");
     switchFans();
     String message = "Fan 1: " + String(digitalRead(FAN_PIN_1)) + " Fan 2: " + String(digitalRead(FAN_PIN_2));
     Serial.println(message);
@@ -68,6 +69,7 @@ void controlHeaters(void* parameter)
   uint32_t heaterWorkTime = millis();;
   while(1)
   {
+    Serial.println("Heater Control Task");
     /* Update and check sensors readings */
     if (sensorsUpdateCheck() == STD_TYPES_NOK)
     {
@@ -114,6 +116,7 @@ void controlHeaters(void* parameter)
 }
 
 void pumpControl(void* parameter){
+  Serial.println("Pump Control Task");
   waterLastDrop = millis();
   while(1)
   {
@@ -128,6 +131,7 @@ void pumpControl(void* parameter){
 
 void GUITask(void* parameter)
 {
+  Serial.println("GUI Task");
   while(1)
   {
     /* Update the GUI */
