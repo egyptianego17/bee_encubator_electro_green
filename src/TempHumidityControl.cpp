@@ -1,14 +1,27 @@
 #include <DHT.h>
 #include "../lib/TempHumidityControl.h"
 #include "../lib/STD_TYPES.h"
+#include <Wire.h>
+#include "Adafruit_SHT31.h"
 
-
+#if SENSOR_TYPE == DHT22
 DHTSensor* primarySensor = new DHTSensor;
 DHTSensor* backupSensor = new DHTSensor;
 DHTSensor* operatingSensor;
 
 DHT primaryDHT22(PRIMIARY_SENSOR_PIN, DHT22);
 DHT backupDHT22(BACKUP_SENSOR_PIN, DHT22);
+
+#elif SENSOR_TYPE == SHT31
+
+DHTSensor* operatingSensor = new DHTSensor;
+
+bool enableHeater = false;
+uint8_t loopCnt = 0;
+
+Adafruit_SHT31 sht31 = Adafruit_SHT31();
+
+#endif
 
 uint8_t currentHeater = HEATER_PIN_1;
 /**
@@ -24,6 +37,8 @@ uint8_t currentHeater = HEATER_PIN_1;
  */
 uint8_t sensorsUpdateCheck()
 {
+  #if SENSOR_TYPE == DHT22
+
   primarySensor->temperature=primaryDHT22.readTemperature();
   primarySensor->humidity=primaryDHT22.readHumidity();
   backupSensor->temperature=backupDHT22.readTemperature();
@@ -74,6 +89,31 @@ uint8_t sensorsUpdateCheck()
     operatingSensor = backupSensor;
   }
   return STD_TYPES_OK;
+  #elif SENSOR_TYPE == SHT31
+  operatingSensor->temperature=sht31.readTemperature();
+  operatingSensor->humidity=sht31.readHumidity();
+
+  Serial.print("Operating Sensor Temperature: ");
+  Serial.println(operatingSensor->temperature);
+  Serial.print("Operating Sensor Humidity: ");
+  Serial.println(operatingSensor->humidity);
+  
+  if(isnan(operatingSensor->temperature) || isnan(operatingSensor->humidity))
+  {
+    operatingSensor->sensorMalfunctionFlag = DHT22_ERROR;
+  }
+  else
+  {
+    operatingSensor->sensorMalfunctionFlag = DHT22_OK;
+  }
+  if (operatingSensor->sensorMalfunctionFlag == DHT22_ERROR)
+  {
+    return STD_TYPES_NOK;
+  }
+
+  return STD_TYPES_OK;
+
+  #endif
 }
 
 /**
@@ -95,11 +135,13 @@ uint8_t sensorsActuatorsInit()
   pinMode(HEATER_PIN_2, OUTPUT);
   pinMode(HUMIDIFIER_PIN, OUTPUT);
 
-  digitalWrite(FAN_PIN_1, LOW);
-  digitalWrite(FAN_PIN_2, HIGH);
-  digitalWrite(HEATER_PIN_1, HIGH);
-  digitalWrite(HEATER_PIN_2, HIGH);
-  digitalWrite(HUMIDIFIER_PIN, HIGH);
+  digitalWrite(FAN_PIN_1, HIGH);
+  digitalWrite(FAN_PIN_2, LOW);
+  digitalWrite(HEATER_PIN_1, LOW);
+  digitalWrite(HEATER_PIN_2, LOW);
+  digitalWrite(HUMIDIFIER_PIN, LOW);
+
+  #if SENSOR_TYPE == DHT22
 
   primaryDHT22.begin();
   backupDHT22.begin();
@@ -108,7 +150,7 @@ uint8_t sensorsActuatorsInit()
   primarySensor->humidity=primaryDHT22.readHumidity();
   backupSensor->temperature=backupDHT22.readTemperature();
   backupSensor->humidity=backupDHT22.readHumidity();
-
+  
   primarySensor->sensorMalfunctionFlag = DHT22_OK;
   backupSensor->sensorMalfunctionFlag = DHT22_OK;
 
@@ -138,6 +180,43 @@ uint8_t sensorsActuatorsInit()
     operatingSensor = backupSensor;
   }
   return STD_TYPES_OK;
+
+  #elif SENSOR_TYPE == SHT31
+
+  Serial.println("SHT31 test");
+  if (! sht31.begin(0x44)) 
+  {   
+      Serial.println("Couldn't find SHT31");
+      while (1) 
+        delay(1);
+      // Set to 0x45 for alternate i2c addr
+  }
+
+  operatingSensor->temperature=sht31.readTemperature();
+  operatingSensor->humidity=sht31.readHumidity();
+
+  Serial.print("Operating Sensor Temperature: ");
+  Serial.println(operatingSensor->temperature);
+  Serial.print("Operating Sensor Humidity: ");
+  Serial.println(operatingSensor->humidity);
+  
+  if(isnan(operatingSensor->temperature) || isnan(operatingSensor->humidity))
+  {
+    operatingSensor->sensorMalfunctionFlag = DHT22_ERROR;
+  }
+  else
+  {
+    operatingSensor->sensorMalfunctionFlag = DHT22_OK;
+  }
+  if (operatingSensor->sensorMalfunctionFlag == DHT22_ERROR)
+  {
+    return STD_TYPES_NOK;
+  }
+
+  return STD_TYPES_OK;
+
+  #endif
+
 }
 
 /**
@@ -157,24 +236,24 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
     switch(currentHeater)
     {
       case HEATER_PIN_1:
-        digitalWrite(HEATER_PIN_1, LOW);
-        digitalWrite(HEATER_PIN_2, HIGH);
+        digitalWrite(HEATER_PIN_1, HIGH);
+        digitalWrite(HEATER_PIN_2, LOW);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_2;
         }
         break;
       case HEATER_PIN_2:
-        digitalWrite(HEATER_PIN_2, LOW);
-        digitalWrite(HEATER_PIN_1, HIGH);
+        digitalWrite(HEATER_PIN_2, HIGH);
+        digitalWrite(HEATER_PIN_1, LOW);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_1;
         }
         break;
       default:
-        digitalWrite(HEATER_PIN_1, LOW);
-        digitalWrite(HEATER_PIN_2, HIGH);
+        digitalWrite(HEATER_PIN_1, HIGH);
+        digitalWrite(HEATER_PIN_2, LOW);
         if (isStateChanged == true)
         {
           currentHeater = HEATER_PIN_1;
@@ -184,8 +263,8 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
   }
   else
   {
-    digitalWrite(HEATER_PIN_1, HIGH);
-    digitalWrite(HEATER_PIN_2, HIGH);
+    digitalWrite(HEATER_PIN_1, LOW);
+    digitalWrite(HEATER_PIN_2, LOW);
   }
   Serial.print("Current heater: ");
   Serial.println(currentHeater);
@@ -200,10 +279,20 @@ void actuateOnRelays(bool heaterRelayState, bool isStateChanged)
 */
 void addWaterDrop(uint32_t duration)
 {
-  digitalWrite(HUMIDIFIER_PIN, LOW);
-  delay(duration);
   digitalWrite(HUMIDIFIER_PIN, HIGH);
+  delay(duration);
+  digitalWrite(HUMIDIFIER_PIN, LOW);
   Serial.println("Water Drop Added");
+}
+
+void turnOnHumidifier()
+{
+  digitalWrite(HUMIDIFIER_PIN, HIGH);
+}
+
+void turnOffHumidifier()
+{
+  digitalWrite(HUMIDIFIER_PIN, LOW);
 }
 
 /**

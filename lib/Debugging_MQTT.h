@@ -2,7 +2,7 @@
 #define _DEBUGGING_MQTT_H
 
 /* Debugging HiveMQ Cloud Broker settings */
-#define mqtt_server "0dc88b2a3f78492bb869b40cd2223080.s1.eu.hivemq.cloud"
+#define mqtt_server "98f5567ae14b46818d9c1f8eba4135a3.s1.eu.hivemq.cloud"
 #define mqtt_username "xaviA"
 #define mqtt_password "12345678Aa"
 #define mqtt_port 8883

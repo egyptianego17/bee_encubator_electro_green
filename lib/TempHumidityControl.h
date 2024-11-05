@@ -8,11 +8,17 @@
 #define FAN_PIN_1                   GPIO_NUM_25
 #define FAN_PIN_2                   GPIO_NUM_26
 #define HUMIDIFIER_PIN              GPIO_NUM_27
-#define AIR_PUMP_PIN                GPIO_NUM_15
-#define VALVE_PIN                   GPIO_NUM_2
+#define AIR_PUMP_PIN                GPIO_NUM_14
+#define VALVE_PIN                   GPIO_NUM_12
+#define EXT_PIN                     GPIO_NUM_13
 #define PUMP_DELAY_TIME             2000
 #define WATER_DROP_INTERVAL         1000*10
 #define FANS_SWITCH_INTERVAL        1000*60*5
+
+#define DHT22 1
+#define SHT31 2
+
+#define SENSOR_TYPE DHT22
 
 typedef struct{
   float temperature;

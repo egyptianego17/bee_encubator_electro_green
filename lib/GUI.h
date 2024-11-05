@@ -1,7 +1,7 @@
 #ifndef _GUI_H
 #define _GUI_H
 
-#define TFT_CS        GPIO_NUM_5 /* Hallowing display control pins: chip select */
+#define TFT_CS        GPIO_NUM_5  /* Hallowing display control pins: chip select */
 #define TFT_RST       GPIO_NUM_17 /* Display reset */
 #define TFT_DC        GPIO_NUM_16 /* Display data/command select */
 

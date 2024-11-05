@@ -2,11 +2,12 @@
 #define _WIFI_H
 
 /* WiFi settings */
-#define ssid "ThreatXAVI"
-#define password "01020328931"
+#define ssid "YYY"
+#define password "A19004952"
 
 #define WIFI_STATUS_CONNECTED 3
 #define WIFI_STATUS_DISCONNECTED 6
+#define VERSION "1.0.9"
 
 /**
  * @brief Initializes the WiFi connection.
